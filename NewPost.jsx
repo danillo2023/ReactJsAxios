@@ -1,27 +1,53 @@
-import React from 'react'
+import blogFetach from "../axios/config";
+
+import { useState } from "react";
+
+import { Navigate, useNavigate } from "react-router-dom";
+
+import "./NewPost.css"
 
 export const NewPost = () => {
-  return <div className='new-post'>
-    <h2>Inserir novo post:</h2>
-    <from>
-      <div className="from-control">
-        <label htmlFor="title">Título:</label>
-        <input type=" text" 
-            name='title'
-            id='title'
-            placeholder='Digite o titulo' />
+  const negative = useNavigate();
+
+  const[title, setTitle] = useState();
+  const[body, setBody]= useState();
+  
+  const createPost = async  (e) =>{
+    e.preventDefault();
+
+    const post={title, body, userId: 1};
+
+    await blogFetach.post("/post",{
+      body:post,
+    });
+    Navigate("/");
+  };
+
+  return(
+    <div className='new-post'>
+     <h2>Inserir novo post:</h2>
+     <form onSubmit={(e) => createPost(e)}>
+       <div className="form-control">
+         <label htmlFor="title">Título:</label>
+         <input type=" text" 
+                name='title'
+                id='title'
+                placeholder='Digite o titulo'
+                onChange={(e)=> setTitle(e.target.value)} />
         </div>
-        <div className="from-control">
+        <div className="form-control">
           <label htmlFor="body">Conteúdo:</label>
           <textarea name="body"
-            id="body"
-            placeholder='Digite o conteúdo'>
-            </textarea>
+                   id="body"
+                  placeholder='Digite o conteúdo'
+                  onChange={(e)=> setBody(e.target.value)} >
+           </textarea>
         </div>
         <input type="submit" value="Criar Post" className='btn'/>
-    </from>
-  
-  </div>;
+    </form>
+   
+   </div>
+  );
 };
 
 export default NewPost;
